@@ -22,7 +22,7 @@ class TagTestCase(TestCase):
         self.assertEqual(Tag.objects.first().name, self.test_tag_name)
         self.assertIsNotNone(Tag.objects.first().created_at)
         self.assertIsNotNone(Tag.objects.first().updated_at)
-        
+
     @log_execution
     def test_failure_tag_creation_without_name(self):
         # Test the failure of tag creation without a name
@@ -57,4 +57,3 @@ class TagTestCase(TestCase):
         # Test the string representation of a tag
         tag = Tag.objects.create(name=self.test_tag_name)
         self.assertEqual(str(tag), self.test_tag_name)
-        
