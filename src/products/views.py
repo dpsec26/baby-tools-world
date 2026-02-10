@@ -25,6 +25,8 @@ def product_detail(request, category_slug, pk):
         category__slug=category_slug,
     )
 
+    tags = product.tags.all()
+
     related_products = (
         Product.objects.filter(category=product.category)
         .exclude(pk=product.pk)
@@ -70,5 +72,5 @@ def product_detail(request, category_slug, pk):
     return render(
         request,
         "product.html",
-        {"product": product, "comments": comments, "related_products": related_products, "form": form},
+        {"product": product, "comments": comments, "related_products": related_products, "form": form, "tags": tags},
     )
