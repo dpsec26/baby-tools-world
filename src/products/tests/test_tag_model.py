@@ -45,7 +45,7 @@ class TagTestCase(TestCase):
     @log_execution
     def test_failure_tag_creation_with_too_long_name(self):
         # Test the failure of tag creation with a too long name
-        field_length = Tag._meta.get_field('name').max_length
+        field_length = Tag._meta.get_field("name").max_length
         long_name = "a" * (field_length + 1)
         with self.assertRaises(Exception):
             tag = Tag(name=long_name)
