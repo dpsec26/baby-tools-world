@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from btw_app.utils import log_execution
@@ -9,9 +10,6 @@ class TagTestCase(TestCase):
     @classmethod
     def setUpTestData(self):
         self.test_tag_name = "Test Tag"
-
-    def setUp(self):
-        Tag.objects.all().delete()
 
     @log_execution
     def test_successful_tag_creation(self):
@@ -26,7 +24,7 @@ class TagTestCase(TestCase):
     @log_execution
     def test_failure_tag_creation_without_name(self):
         # Test the failure of tag creation without a name
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             tag = Tag(name="")
             tag.full_clean()
             tag.save()
@@ -36,7 +34,7 @@ class TagTestCase(TestCase):
     def test_failure_tag_creation_with_duplicate_name(self):
         # Test the failure of tag creation with a duplicate name
         Tag.objects.create(name=self.test_tag_name)
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             tag = Tag(name=self.test_tag_name)
             tag.full_clean()
             tag.save()
@@ -47,7 +45,7 @@ class TagTestCase(TestCase):
         # Test the failure of tag creation with a too long name
         field_length = Tag._meta.get_field("name").max_length
         long_name = "a" * (field_length + 1)
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             tag = Tag(name=long_name)
             tag.full_clean()
             tag.save()
