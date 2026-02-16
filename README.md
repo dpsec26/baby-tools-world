@@ -3,6 +3,13 @@
 This repository contains the source code of the 'Baby Tools World' which is a simple full stack shop application written in Python using Django 6.
 The project was developed for educational purposes only and therefore has no claim to feature completeness, or only minimal claims regarding application security, user experience, or design.
 
+## Features
+
+### Product tags
+
+Products can be tagged with labels (e.g. "New", "Promotion"). Tags are shown on the product details page.
+All tags can be managed in the Django admin panel. Multiple tags are supported.
+
 ## Prerequisites
 
 - Docker Engine or Docker Desktop
