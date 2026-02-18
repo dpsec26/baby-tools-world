@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Comment, Product
+from .models import Category, Comment, Product, Tag
 
 
 @admin.register(Category)
@@ -11,8 +11,14 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ("name", "category", "price", "average_rating", "rating_count", "created_at")
+    list_display = ("name", "category", "price", "average_rating", "rating_count", "created_at", "tag_list")
     list_select_related = ("category",)
+    list_filter = ("category", "tags")
+
+    def tag_list(self, obj):
+        return ", ".join(tag.name for tag in obj.tags.all())
+
+    tag_list.short_description = "Tags"
 
 
 @admin.register(Comment)
@@ -20,3 +26,10 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ("product", "user", "guest_name", "rating", "created_at")
     list_filter = ("rating", "created_at")
     search_fields = ("guest_name", "guest_email", "text", "user__username")
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "created_at", "updated_at")
+    search_fields = ("name",)
+    readonly_fields = ("created_at", "updated_at")

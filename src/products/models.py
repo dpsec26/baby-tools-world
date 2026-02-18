@@ -6,13 +6,18 @@ from django.db import models
 
 
 # Create your models here.
-class Category(models.Model):
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class Category(BaseModel):
     name = models.CharField(max_length=50, unique=True, null=False, blank=False)
     description = models.TextField(max_length=200, null=True, blank=True)
     slug = models.SlugField(max_length=50, unique=True, null=False, blank=False)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -22,7 +27,17 @@ class Category(models.Model):
         verbose_name_plural = "Categories"
 
 
-class Product(models.Model):
+class Tag(BaseModel):
+    name = models.CharField(max_length=50, unique=True, null=False, blank=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+
+
+class Product(BaseModel):
 
     category = models.ForeignKey(Category, null=True, on_delete=models.DO_NOTHING)
     description = models.TextField(max_length=250, null=True, blank=True)
@@ -30,8 +45,7 @@ class Product(models.Model):
     name = models.CharField(max_length=80, blank=False, null=False)
     price = models.DecimalField(max_digits=6, decimal_places=2, validators=[MinValueValidator(Decimal("0.00"))])
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     # NEW helper properties
     @property
@@ -49,15 +63,13 @@ class Product(models.Model):
 
 
 # NEW model
-class Comment(models.Model):
+class Comment(BaseModel):
     product = models.ForeignKey(Product, related_name="comments", on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
     guest_name = models.CharField(max_length=80, blank=True)
     guest_email = models.EmailField(blank=True)
     rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     text = models.TextField(max_length=400, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["-created_at"]
